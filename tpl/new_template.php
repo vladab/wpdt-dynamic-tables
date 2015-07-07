@@ -85,7 +85,7 @@
                 <tr <?php if( ($dataColumn_key == $wpDataTable->getIdColumnKey()) || ($dataColumn->getInputType() == 'none') || ( ( $wpDataTable->getUserIdColumn() != '' ) && ( $dataColumn_key == $wpDataTable->getUserIdColumn() ) ) ) { ?>style="display: none" <?php if($dataColumn_key == $wpDataTable->getIdColumnKey()) { ?>class="idRow"<?php } } ?>>
                     <td><label for="<?php echo $wpDataTable->getId() ?>_<?php echo $dataColumn_key ?>"><?php echo $dataColumn->getTitle(); ?>:<?php if( $dataColumn->getNotNull() ){ ?> * <?php } ?></label></td>
                     <?php $possibleValues = $dataColumn->getPossibleValues(); ?>
-                    <td>
+                    <td <?php echo td_get_table_td_conf($wpDataTable->getWpId(), $wpDataTable->returnCellValue( $wdtRowDataArr[ $dataColumnHeader ], $dataColumnHeader )); ?>>
                         <?php if($dataColumn->getInputType() == 'textarea') { ?>
                             <textarea data-input_type="<?php echo $dataColumn->getInputType();?>" class="editDialogInput <?php if( $dataColumn->getNotNull() ){ ?>mandatory<?php } ?>" id="<?php echo $wpDataTable->getId() ?>_<?php echo $dataColumn_key ?>" data-key="<?php echo $dataColumn_key ?>" rows="3" columns="50" data-column_header="<?php echo $dataColumn->getTitle();?>"></textarea>
                         <?php } elseif(($dataColumn->getInputType() == 'selectbox') || ($dataColumn->getInputType() == 'multi-selectbox')) { ?>
