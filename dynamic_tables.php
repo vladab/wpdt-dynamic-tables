@@ -8,7 +8,7 @@ Author: Vladica Bibeskovic
 Author URI: http://github.com/vladab
 */
 
-add_filter( 'template_filter', 'dt_load_template_file', 10, 1);
+add_filter( 'wpdatatables_filter_template_file_location', 'dt_load_template_file', 10, 1);
 add_action( 'wpdatatables_admin_before_edit', 'dt_admin_settings_template');
 add_action( 'wp_ajax_dt_get_table', 'dt_get_table_callback' );
 add_action( 'wp_ajax_nopriv_dt_get_table', 'dt_get_table_callback' );
