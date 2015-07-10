@@ -10,10 +10,10 @@ Author URI: http://github.com/vladab
 
 add_filter( 'wpdatatables_filter_template_file_location', 'dt_load_template_file', 10, 1);
 add_action( 'wpdatatables_admin_before_edit', 'dt_admin_settings_template');
-add_action( 'wp_ajax_dt_get_table', 'dt_get_table_callback' );
-add_action( 'wp_ajax_nopriv_dt_get_table', 'dt_get_table_callback' );
-add_action( 'wp_ajax_dt_save_dt_table_settings', 'dt_save_dt_table_settings_callback' );
-add_action( 'wp_ajax_nopriv_dt_save_dt_table_settings', 'dt_save_dt_table_settings_callback' );
+add_action( 'wp_ajax_dt_get_table', 'dt_get_table_callback', 10, 1 );
+add_action( 'wp_ajax_nopriv_dt_get_table', 'dt_get_table_callback', 10, 1 );
+add_action( 'wp_ajax_dt_save_dt_table_settings', 'dt_save_dt_table_settings_callback', 10, 1 );
+add_action( 'wp_ajax_nopriv_dt_save_dt_table_settings', 'dt_save_dt_table_settings_callback', 10, 1 );
 
 if( !function_exists('dt_load_template_file') ) {
     function dt_load_template_file( $file_title ) {
@@ -30,7 +30,7 @@ if( !function_exists('dt_get_table_callback') ) {
     function dt_get_table_callback() {
         if( isset( $_REQUEST['table_id'] ) && $_REQUEST['table_id'] != '') {
             $table_id = intval( $_REQUEST['table_id'] );
-            $configuration = (array)json_decode(get_option('dt_configuration', array()), true);
+            $configuration = (array)json_decode(get_option('dt_configuration', ''), true);
             if( !empty( $configuration ) && isset($configuration[$table_id]) ) {
                 $corresponding_table_id = (isset($configuration[$table_id]['child_table_id']))? $configuration[$table_id]['child_table_id'] : exit() ;
                 $variable_parameters = '';
@@ -44,14 +44,14 @@ if( !function_exists('dt_get_table_callback') ) {
                     $variable_parameters .= (isset($_REQUEST['variable3']) && $_REQUEST['variable3'] != '') ? " var3='{$_REQUEST['variable3']}'" : '';
                 }
                 echo do_shortcode("[wpdatatable id={$corresponding_table_id} {$variable_parameters}]");
-                }
-            exit();
+            }
         }
+        exit();
     }
 }
 if( !function_exists('td_get_table_td_conf') ) {
-    function td_get_table_td_conf( $table_id, $value ) {
-        $configuration = (array)json_decode(get_option('dt_configuration', array()), true);
+    function td_get_table_td_conf( $table_id, $value, $tableArray ) {
+        $configuration = (array)json_decode(get_option('dt_configuration', ''), true);
         $variable_parameters = '';
         if( isset( $configuration[$table_id]['var1'] ) && $configuration[$table_id]['var1'] != '' ) {
             if($configuration[$table_id]['var1'] == 'TDVALUE') {
@@ -62,7 +62,7 @@ if( !function_exists('td_get_table_td_conf') ) {
         }
         if( isset( $configuration[$table_id]['var2'] ) && $configuration[$table_id]['var2'] != '' ) {
             if($configuration[$table_id]['var2'] == 'TDVALUE') {
-                $variable_parameters .= " var2='{$value}' ";
+                $variable_parameters = " var1='{$_REQUEST['variable1']}'var2='{$value}' ";
             } else {
                 $variable_parameters .= " var2='{$configuration[$table_id]['var2']}' ";
             }
@@ -87,22 +87,32 @@ if( !function_exists('dt_admin_settings_template') ) {
 }
 if( !function_exists('dt_save_dt_table_settings_callback') ) {
     function dt_save_dt_table_settings_callback() {
-        if( isset($_REQUEST['table_id']) && $_REQUEST['table_id'] != '' ) {
-            $configuration = (array)json_decode(get_option('dt_configuration', array()), true);
-            $table_id = intval( $_REQUEST['table_id'] );
-            if (isset($_REQUEST['child_id']) && $_REQUEST['child_id'] != '') {
-                $configuration[$table_id]['child_table_id'] = intval($_REQUEST['child_id']);
+        if( isset($_POST['table_id']) && $_POST['table_id'] != '' ) {
+            $option = get_option('dt_configuration' );
+            if( $option ) {
+                $configuration = (array)json_decode( $option, true);
+            } else {
+                $configuration = array();
             }
-            if( isset($_REQUEST['variable1'])) {
-                $configuration[$table_id]['var1'] = $_REQUEST['variable1'];
+            $table_id = intval( $_POST['table_id'] );
+            if (isset($_POST['child_id']) && $_POST['child_id'] != '') {
+                $configuration[$table_id]['child_table_id'] = intval($_POST['child_id']);
             }
-            if( isset($_REQUEST['variable2'])) {
-                $configuration[$table_id]['var2'] = $_REQUEST['variable2'];
+            if( isset($_POST['variable1'])) {
+                $configuration[$table_id]['var1'] = $_POST['variable1'];
             }
-            if( isset($_REQUEST['variable3'])) {
-                $configuration[$table_id]['var3'] = $_REQUEST['variable3'];
+            if( isset($_POST['variable2'])) {
+                $configuration[$table_id]['var2'] = $_POST['variable2'];
             }
+            if( isset($_POST['variable3'])) {
+                $configuration[$table_id]['var3'] = $_POST['variable3'];
+            }
+            echo 'conf ' . $configuration[$table_id];
+            var_dump( $configuration );
             update_option('dt_configuration', json_encode( $configuration) );
+        } else {
+            echo 'missing request table id';
         }
+        exit;
     }
 }

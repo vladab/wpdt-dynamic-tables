@@ -49,7 +49,7 @@
             <?php do_action('wpdatatables_before_row', $wpDataTable->getWpId(), $wdtRowIndex); ?>
             <tr id="table_<?php echo $wpDataTable->getWpId() ?>_row_<?php echo $wdtRowIndex; ?>">
                 <?php foreach( $wpDataTable->getColumnsByHeaders() as $dataColumnHeader => $dataColumn ) { ?>
-                    <td <?php echo td_get_table_td_conf($wpDataTable->getWpId(), $wpDataTable->returnCellValue( $wdtRowDataArr[ $dataColumnHeader ], $dataColumnHeader )); ?>
+                    <td <?php echo td_get_table_td_conf($wpDataTable->getWpId(), $wpDataTable->returnCellValue( $wdtRowDataArr[ $dataColumnHeader ], $dataColumnHeader ), $wdtRowDataArr); ?>
                         class="<?php echo $dataColumn->getCSSClasses() ?> dt_sad" style="<?php echo $dataColumn->getCSSStyle();?>"><?php echo $wpDataTable->returnCellValue( $wdtRowDataArr[ $dataColumnHeader ], $dataColumnHeader ); ?></td>
                 <?php } ?>
             </tr>
@@ -85,7 +85,7 @@
                 <tr <?php if( ($dataColumn_key == $wpDataTable->getIdColumnKey()) || ($dataColumn->getInputType() == 'none') || ( ( $wpDataTable->getUserIdColumn() != '' ) && ( $dataColumn_key == $wpDataTable->getUserIdColumn() ) ) ) { ?>style="display: none" <?php if($dataColumn_key == $wpDataTable->getIdColumnKey()) { ?>class="idRow"<?php } } ?>>
                     <td><label for="<?php echo $wpDataTable->getId() ?>_<?php echo $dataColumn_key ?>"><?php echo $dataColumn->getTitle(); ?>:<?php if( $dataColumn->getNotNull() ){ ?> * <?php } ?></label></td>
                     <?php $possibleValues = $dataColumn->getPossibleValues(); ?>
-                    <td <?php echo td_get_table_td_conf($wpDataTable->getWpId(), $wpDataTable->returnCellValue( $wdtRowDataArr[ $dataColumnHeader ], $dataColumnHeader )); ?>>
+                    <td>
                         <?php if($dataColumn->getInputType() == 'textarea') { ?>
                             <textarea data-input_type="<?php echo $dataColumn->getInputType();?>" class="editDialogInput <?php if( $dataColumn->getNotNull() ){ ?>mandatory<?php } ?>" id="<?php echo $wpDataTable->getId() ?>_<?php echo $dataColumn_key ?>" data-key="<?php echo $dataColumn_key ?>" rows="3" columns="50" data-column_header="<?php echo $dataColumn->getTitle();?>"></textarea>
                         <?php } elseif(($dataColumn->getInputType() == 'selectbox') || ($dataColumn->getInputType() == 'multi-selectbox')) { ?>
