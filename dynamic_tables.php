@@ -56,13 +56,27 @@ if( !function_exists('td_get_table_td_conf') ) {
         if( isset( $configuration[$table_id]['var1'] ) && $configuration[$table_id]['var1'] != '' ) {
             if($configuration[$table_id]['var1'] == 'TDVALUE') {
                 $variable_parameters .= " var1='{$value}' ";
+            } elseif( substr( $configuration[$table_id]['var1'], 0, 3 ) === "CV_" ) {
+                $index = substr($configuration[$table_id]['var1'], 3);
+                if( isset( $tableArray[$index] ) && $tableArray[$index] != '' ) {
+                    $variable_parameters .= " var1='{$tableArray[$index]}' ";
+                } else {
+                    $variable_parameters .= " var1='{$value}' ";
+                }
             } else {
                 $variable_parameters .= " var1='{$configuration[$table_id]['var1']}' ";
             }
         }
         if( isset( $configuration[$table_id]['var2'] ) && $configuration[$table_id]['var2'] != '' ) {
             if($configuration[$table_id]['var2'] == 'TDVALUE') {
-                $variable_parameters = " var1='{$_REQUEST['variable1']}'var2='{$value}' ";
+                $variable_parameters = " var1='{$_REQUEST['variable1']}' var2='{$value}' ";
+            } elseif( substr( $configuration[$table_id]['var2'], 0, 3 ) === "CV_" ) {
+                $index = substr($configuration[$table_id]['var2'], 3);
+                if( isset( $tableArray[$index] ) && $tableArray[$index] != '' ) {
+                    $variable_parameters .= " var2='{$tableArray[$index]}' ";
+                } else {
+                    $variable_parameters = " var1='{$_REQUEST['variable1']}' var2='{$value}' ";
+                }
             } else {
                 $variable_parameters .= " var2='{$configuration[$table_id]['var2']}' ";
             }
@@ -70,6 +84,13 @@ if( !function_exists('td_get_table_td_conf') ) {
         if( isset( $configuration[$table_id]['var3'] ) && $configuration[$table_id]['var3'] != '' ) {
             if($configuration[$table_id]['var3'] == 'TDVALUE') {
                 $variable_parameters .= " var3='{$value}' ";
+            } elseif( substr( $configuration[$table_id]['var3'], 0, 3 ) === "CV_" ) {
+                $index = substr($configuration[$table_id]['var3'], 3);
+                if( isset( $tableArray[$index] ) && $tableArray[$index] != '' ) {
+                    $variable_parameters .= " var3='{$tableArray[$index]}' ";
+                } else {
+                    $variable_parameters .= " var3='{$value}' ";
+                }
             } else {
                 $variable_parameters .= " var3='{$configuration[$table_id]['var3']}' ";
             }
